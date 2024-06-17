@@ -1,0 +1,60 @@
+//Quiz3B
+//"I pledge my honor that I have abided by the Stevens Honor System" - Himanshu Rana and Theo J
+
+// declarations
+Semaphore permToLoad = new Semaphore(0);
+Semaphore doneLoading = new Semaphore(0);
+
+//mutex represents the two different tracks
+Semaphore mutex0 = new Semaphore(1);
+Semaphore mutex1 = new Semaphore(1); 
+
+Semaphore wait = new Semaphore(1); 
+
+thread PassengerTrain(i) {
+
+	if(i == 0) {
+		mutex0.acquire(); //passenger train in station on track0
+		//critical section
+		
+		mutex0.release(); 
+	}
+
+	if(i == 1) {
+		mutex1.acquire(); 
+		//critical section
+	
+		mutex1.release(); 
+	}
+}
+
+
+thread FreightTrain(i) {
+	
+	//we assume that the scheduler is fair 
+	//**put the waits around the tracks**
+	mutex0.acquire();
+	mutex1.acquire(); 
+	
+
+	permToLoad.release(); 
+	doneLoading.acquire(); 
+
+	//making sure that both tracks are free after the freight train is done loading
+	//not necessary -- redundant 
+	wait.acquire(); 
+	mutex0.release(); 
+	mutex1.release(); 
+	wait.release(); 
+	
+}
+
+thread LoadingMachine: {
+
+	while (true) {
+		permToLoad.acquire ();
+		// process vehicle
+		doneLoading.release (); 
+	}
+}
+

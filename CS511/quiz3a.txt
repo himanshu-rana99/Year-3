@@ -1,0 +1,38 @@
+//quiz3a
+
+Semaphore []  permToProcess = {new Semaphore (0), new Semaphore (0), new Semaphore (0) } ;
+Semaphore []  doneProcessing = {new Semaphore (0), new Semaphore (0), new Semaphore (0) } ;
+
+
+Semaphore station0 = new Semaphore(1);  
+Semaphore station1 = new Semaphore(1);  
+Semaphore station2 = new Semaphore(1);  
+
+
+
+thread Car: {
+	station0.acquire(); 
+	permToProcess[0].release(); 
+	doneProcessing[0].acquire(); 
+	
+	station1.acquire(); 
+	station0.release(); 
+
+	permToProcess[1].release(); 
+	doneProcessing[1].acquire(); 
+
+	station2.acquire(); 
+	station1.release(); 
+
+	permToProcess[2].release(); 
+	doneProcessing[2].acquire(); 
+
+	station2.release(); 
+
+
+
+
+
+	
+}
+
